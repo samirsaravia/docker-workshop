@@ -2,6 +2,8 @@
 # coding: utf-8
 
 import pandas as pd
+import click
+
 
 try:
     from tqdm.auto import tqdm
@@ -16,20 +18,18 @@ except ImportError:
     import os
     os.system('uv add sqlalchemy')
     from sqlalchemy import create_engine
-# get_ipython().system('uv add psycopg2-binary   #use -binary so ease install')
-# get_ipython().system('uv add tqdm')
 
+@click.command()
+@click.option("--pg-user", default="root", help="PostgreSQL username.")
+@click.option("--pg-pass", default="root", help="PostgreSQL password.")
+@click.option("--pg-host", default="localhost", help="PostgreSQL host.")
+@click.option("--pg-db", default="ny_taxi", help="PostgreSQL database name.")
+@click.option("--pg-port", default=5432, type=int, help="PostgreSQL port.")
+@click.option("--target-table", default="blue_taxi_data", help="Target table name.")
 
-
-def ingest_data():
-    pg_user: str = "root"
-    pg_pass: str = "root"
-    pg_host: str = "localhost"
-    pg_db: str = "ny_taxi"
-    pg_port: int = 5432
+def ingest_data(pg_user, pg_pass, pg_host, pg_db, pg_port, target_table):
     year = 2021
-    month = 1
-    target_table = "blue_taxi_data"
+    month = 2
     chunksize: int = 100000
     first = True
     dtype = {
